@@ -1,0 +1,77 @@
+/* Additions on top of globals.css. Import after globals.css in app/layout.tsx. */
+a{color:inherit;text-decoration:none}
+a.btn{display:inline-flex;align-items:center;justify-content:center}
+a.pkg-card{display:block}
+.header .brand{display:block}
+.menu{display:none;position:relative}
+.menu summary{list-style:none;cursor:pointer;font-size:12px}
+.menu summary::-webkit-details-marker{display:none}
+.menu div{position:absolute;right:0;top:34px;background:var(--surface);border:1px solid var(--gold);padding:14px 18px;display:flex;flex-direction:column;gap:14px;min-width:160px;z-index:10}
+.searchbar select{border:0;background:transparent;font-size:12px;padding:0;min-width:130px}
+.filters{flex-wrap:wrap}
+.filters select{min-width:150px}
+.filters .clear{font:11px 'DM Mono';text-decoration:underline}
+.enquiry-for{margin-top:18px;color:var(--muted);font-size:12px}
+.pkg-skeleton{height:430px;background:var(--deep);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+.day{border-bottom:1px solid #cdbb94}
+.day summary{list-style:none;cursor:pointer}
+.day summary::-webkit-details-marker{display:none}
+.day .itinerary-row{border-bottom:0}
+.day .plus{transition:transform .2s}
+.day[open] .plus{transform:rotate(45deg)}
+.day-body{padding:0 0 28px 92px;color:var(--muted);font-size:12px;line-height:1.6;max-width:60ch}
+.day-body small{display:block;margin-top:10px;font:10px 'DM Mono';letter-spacing:.1em;text-transform:uppercase}
+.detail-extras{padding:0 8vw 120px;display:grid;grid-template-columns:1fr 1fr;gap:70px 100px}
+.detail-extras h3{font:11px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.span-2{grid-column:1/-1}
+.plain-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--gold)}
+.plain-list li{padding:13px 0;border-bottom:1px solid #cdbb94;font-size:13px;line-height:1.5}
+.plain-list small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:14px;max-width:60ch}
+.route-map{margin:0}
+.route-map svg{width:100%;height:auto;background:var(--surface);border:1px solid var(--gold)}
+.route-map text{font:11px Manrope;fill:var(--ink)}
+.route-map figcaption{margin-top:8px;font:10px 'DM Mono';color:var(--muted)}
+.price-table{width:100%;border-collapse:collapse;font-size:13px}
+.price-table th{font:10px 'DM Mono';color:var(--muted);text-align:left;padding:10px 0;border-top:1px solid var(--gold);text-transform:uppercase;letter-spacing:.1em}
+.price-table td{padding:13px 0;border-top:1px solid #cdbb94}
+.price-table small{color:var(--muted);font-size:10px;margin-left:6px}
+.detail:has(.toggle .active[data-tone='monsoon']){background:#e3e8dc}
+.mobile-bar{display:none}
+.field{display:flex;flex-direction:column}
+.field-error,.form-error{color:#9b5f3f;font-size:11px;margin-top:6px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.enquiry-form .btn:disabled{opacity:.6;cursor:wait}
+/* Fixes for two rules in globals.css that lost a space */
+.admin-shell{min-height:calc(100vh - 82px)}
+.inquiry{grid-template-columns:38px 2fr 90px 100px}
+@media(max-width:800px){
+  .menu{display:block}
+  .header nav{display:none}
+  .detail-extras{grid-template-columns:1fr;padding:0 5vw 100px;gap:50px}
+  .day-body{padding-left:67px}
+  .enquiry{padding-bottom:110px}
+  .mobile-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:space-between;align-items:center;gap:16px;padding:12px 5vw calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--gold)}
+  .mobile-bar strong{font:23px Fraunces}
+  .mobile-bar span{display:block;font:9px 'DM Mono';color:var(--muted);text-transform:uppercase}
+}
+@media(prefers-reduced-motion:reduce){.pkg-skeleton{animation:none}html{scroll-behavior:auto}.day .plus{transition:none}}
+/* Menu and responsive fixes */
+.header nav a,.menu a,footer a{font-size:12px}
+.menu summary{padding:10px 0}
+.menu[open] summary{text-decoration:underline}
+.menu div{top:44px}
+.menu a{display:block;padding:10px 0}
+footer>div.footer-note{display:block}
+footer .footer-note a{font-size:inherit;text-decoration:underline}
+.enquiry-form .field{display:flex;flex-direction:column;gap:0}
+@media(max-width:800px){
+  .searchbar select,.filters select{min-width:0;width:100%}
+  .filters .clear{align-self:center}
+  .enquiry-form>div{grid-template-columns:1fr}
+  .price-table td small{display:block;margin:4px 0 0}
+  body:has(.mobile-bar) footer{padding-bottom:110px}
+}
+
+.detail-hero .eyebrow{color:#efe3c4}

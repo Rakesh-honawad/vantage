@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import './extra.css'
 
 export const metadata: Metadata = {
   title: 'Kasavu Travel — Kerala, in its own time.',
