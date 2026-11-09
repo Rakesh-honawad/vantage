@@ -1,12 +1,11 @@
-'use client'
-
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { MONTH_NAMES } from '@/lib/pricing'
+import { getText, getLocale, type Locale, withLocale } from '@/lib/i18n'
 
 /** Filters live in the URL, so results are shareable and rendered on the server. */
-export function PackageFilters({ destinations, count }: { destinations: string[]; count: number }) {
+export function PackageFilters({ destinations, count, locale = 'en' }: { destinations: string[]; count: number; locale?: Locale }) {
   const router = useRouter()
   const path = usePathname()
   const params = useSearchParams()
@@ -34,29 +33,29 @@ export function PackageFilters({ destinations, count }: { destinations: string[]
 
   return (
     <div className="filters" aria-busy={pending}>
-      <input aria-label="Search packages" placeholder="Search places or journeys" value={q} onChange={(e) => setQ(e.target.value)} />
-      <select aria-label="Destination" value={get('destination')} onChange={(e) => update('destination', e.target.value)}>
-        <option value="">Any destination</option>
+      <input aria-label={getText(locale, 'searchPackages')} placeholder={getText(locale, 'searchPackages')} value={q} onChange={(e) => setQ(e.target.value)} />
+      <select aria-label={getText(locale, 'destination')} value={get('destination')} onChange={(e) => update('destination', e.target.value)}>
+        <option value="">{getText(locale, 'anyDestination')}</option>
         {destinations.map((d) => <option key={d}>{d}</option>)}
       </select>
-      <select aria-label="Month of travel" value={get('month')} onChange={(e) => update('month', e.target.value)}>
-        <option value="">Any month</option>
+      <select aria-label={getText(locale, 'when')} value={get('month')} onChange={(e) => update('month', e.target.value)}>
+        <option value="">{getText(locale, 'anyMonth')}</option>
         {MONTH_NAMES.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
       </select>
       <select aria-label="Duration" value={get('duration')} onChange={(e) => update('duration', e.target.value)}>
-        <option value="">Any length</option>
+        <option value="">{getText(locale, 'anyLength')}</option>
         <option value="short">Up to 4 days</option>
         <option value="mid">5 to 7 days</option>
         <option value="long">8 days or more</option>
       </select>
       <select aria-label="Hotel stars" value={get('stars')} onChange={(e) => update('stars', e.target.value)}>
-        <option value="">Any hotel</option>
+        <option value="">{getText(locale, 'anyHotel')}</option>
         <option value="3">3 star and above</option>
         <option value="4">4 star and above</option>
         <option value="5">5 star</option>
       </select>
-      {active && <Link href="/packages" className="clear">Clear</Link>}
-      <span className="mono" role="status">{count} {count === 1 ? 'journey' : 'journeys'}</span>
+      {active && <Link href={withLocale('/packages', locale)} className="clear">{getText(locale, 'clear')}</Link>}
+      <span className="mono" role="status">{count} {count === 1 ? getText(locale, 'journey') : getText(locale, 'journeys')}</span>
     </div>
   )
 }

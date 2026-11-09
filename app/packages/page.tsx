@@ -5,6 +5,7 @@ import { Header } from '@/components/site/header'
 import { PackageCard } from '@/components/site/package-card'
 import { PackageFilters } from '@/components/site/package-filters'
 import { type Duration, getDestinations, getPublishedPackages } from '@/lib/data/packages'
+import { getLocale } from '@/lib/i18n'
 
 export const metadata: Metadata = {
   title: 'Kerala and South India holiday packages',
@@ -20,6 +21,7 @@ const int = (v: string | undefined, min: number, max: number) => {
 
 export default async function PackagesPage({ searchParams }: { searchParams: Search }) {
   const sp = await searchParams
+  const locale = getLocale(sp)
   const d = one(sp.duration)
   const [results, destinations] = await Promise.all([
     getPublishedPackages({
@@ -35,14 +37,14 @@ export default async function PackagesPage({ searchParams }: { searchParams: Sea
 
   return (
     <>
-      <Header />
+      <Header locale={locale} />
       <main className="listing">
         <div className="list-intro">
           <span className="eyebrow">Curated, not crowded</span>
           <h1>Find your<br /><em>kind of Kerala.</em></h1>
           <p>Every journey is made with room for the unexpected.</p>
         </div>
-        <PackageFilters destinations={destinations} count={results.length} />
+        <PackageFilters destinations={destinations} count={results.length} locale={locale} />
         <div className="pkg-grid list-grid">{results.map((p) => <PackageCard key={p.code} p={p} />)}</div>
         {results.length === 0 && (
           <div className="empty">
@@ -52,7 +54,7 @@ export default async function PackagesPage({ searchParams }: { searchParams: Sea
           </div>
         )}
       </main>
-      <Footer />
+      <Footer locale={locale} />
     </>
   )
 }

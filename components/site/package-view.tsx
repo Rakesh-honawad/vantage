@@ -3,9 +3,10 @@ import { PricePanel } from '@/components/site/price-panel'
 import { RouteMap } from '@/components/site/route-map'
 import { PRICE_BASIS, formatINR, hasPricingGap, seasonRange } from '@/lib/pricing'
 import type { TourPackage } from '@/lib/types'
+import { getText, type Locale } from '@/lib/i18n'
 
 /** The package page body. Used by the public page and by the staff preview of a draft. */
-export function PackageView({ p, preview = false }: { p: TourPackage; preview?: boolean }) {
+export function PackageView({ p, preview = false, locale = 'en' }: { p: TourPackage; preview?: boolean; locale?: Locale }) {
   return (
     <main className="detail">
       <div className="detail-hero" style={{ backgroundImage: p.coverImage ? `url(${p.coverImage})` : undefined }}>
@@ -18,7 +19,7 @@ export function PackageView({ p, preview = false }: { p: TourPackage; preview?: 
 
       <div className="detail-body">
         <div>
-          <span className="eyebrow">The route</span>
+          <span className="eyebrow">{getText(locale, 'route')}</span>
           <h2>A little more time<br /><em>for the good things.</em></h2>
           <p className="lead">{p.summary}</p>
           <div className="itinerary">
@@ -38,32 +39,32 @@ export function PackageView({ p, preview = false }: { p: TourPackage; preview?: 
       </div>
 
       <div className="detail-extras">
-        <section><h3>Included</h3><ul className="plain-list">{p.inclusions.map((x) => <li key={x}>{x}</li>)}</ul></section>
-        <section><h3>Not included</h3><ul className="plain-list">{p.exclusions.map((x) => <li key={x}>{x}</li>)}</ul></section>
+        <section><h3>{getText(locale, 'included')}</h3><ul className="plain-list">{p.inclusions.map((x) => <li key={x}>{x}</li>)}</ul></section>
+        <section><h3>{getText(locale, 'notIncluded')}</h3><ul className="plain-list">{p.exclusions.map((x) => <li key={x}>{x}</li>)}</ul></section>
         <section>
-          <h3>Where you stay</h3>
+          <h3>{getText(locale, 'whereStay')}</h3>
           <ul className="plain-list">{p.hotels.map((h) => <li key={h.name}>{h.name}<small>{h.city} &middot; {h.stars} star</small></li>)}</ul>
         </section>
-        <section><h3>The route</h3><RouteMap stops={p.routeStops} /></section>
+        <section><h3>{getText(locale, 'route')}</h3><RouteMap stops={p.routeStops} /></section>
         <section className="span-2">
-          <h3>Seasonal prices</h3>
+          <h3>{getText(locale, 'seasonalPrices')}</h3>
           <table className="price-table">
-            <thead><tr><th>Season</th><th>Dates</th><th>Price</th></tr></thead>
+            <thead><tr><th>{getText(locale, 'season')}</th><th>{getText(locale, 'dates')}</th><th>{getText(locale, 'price')}</th></tr></thead>
             <tbody>
               {p.seasons.map((s) => (
                 <tr key={s.name}><td>{s.name}</td><td>{seasonRange(s)}</td><td>{formatINR(s.pricePerPerson)} <small>{PRICE_BASIS}</small></td></tr>
               ))}
             </tbody>
           </table>
-          {hasPricingGap(p) && <p className="note">Travelling in another month? Ask us and we will quote it.</p>}
+          {hasPricingGap(p) && <p className="note">{getText(locale, 'askQuote')}</p>}
         </section>
-        <section className="span-2"><h3>Changes and cancellation</h3><p className="note">{p.cancellationNote}</p></section>
+        <section className="span-2"><h3>{getText(locale, 'changes')}</h3><p className="note">{p.cancellationNote}</p></section>
       </div>
 
       {preview ? (
-        <section className="enquiry"><div><span className="eyebrow">Make it yours</span><h2>Tell us about<br /><em>your trip.</em></h2><p className="enquiry-for">The enquiry form is switched off in preview.</p></div></section>
+        <section className="enquiry"><div><span className="eyebrow">{getText(locale, 'makeItYours')}</span><h2>{getText(locale, 'tellUsAbout')}<br /><em>{getText(locale, 'yourTrip')}</em></h2><p className="enquiry-for">The enquiry form is switched off in preview mode.</p></div></section>
       ) : (
-        <EnquiryForm packageCode={p.code} packageTitle={p.title} />
+        <EnquiryForm packageCode={p.code} packageTitle={p.title} locale={locale} />
       )}
     </main>
   )
