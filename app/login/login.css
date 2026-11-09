@@ -1,0 +1,9 @@
+.login{min-height:100vh;display:grid;place-items:center;padding:6vw 5vw}
+.login-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--gold);padding:40px 36px}
+.login-card h1{font-size:44px;margin:14px 0 8px}
+.login-card p.sub{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:28px}
+.login-form{display:flex;flex-direction:column;gap:20px}
+.login-form label{color:var(--muted);font-size:10px}
+.login-form input{background:transparent;border:0;border-bottom:1px solid var(--gold);padding:12px 0;font-size:15px}
+.login-form .btn:disabled{opacity:.6;cursor:wait}
+.login-back{display:inline-block;margin-top:26px;font:11px 'DM Mono';text-decoration:underline}

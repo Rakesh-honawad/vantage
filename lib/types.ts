@@ -30,6 +30,9 @@ export type TourPackage = {
   updatedBy: string
 }
 
+/** What is stored in packages.draft and package_versions.content (status lives on the packages row). */
+export type PackageContent = Omit<TourPackage, 'status'>
+
 export type Enquiry = {
   id: string
   name: string

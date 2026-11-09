@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const schema = z.object({
   message: z.string().trim().min(10, 'Tell us a little more about your trip').max(2000, 'Please keep this under 2000 characters'),
@@ -32,6 +33,23 @@ export async function POST(req: Request) {
   }
   const d = parsed.data
   if (d.website) return NextResponse.json({ ok: true, acknowledgement: acknowledgement(d.name) }) // bot: pretend success, store nothing
-  // Phase 2: insert into Supabase (enquiries table) and record consent time.
-  return NextResponse.json({ ok: true, id: crypto.randomUUID(), acknowledgement: acknowledgement(d.name) }, { status: 201 })
+
+  const { data, error } = await supabaseAdmin()
+    .from('enquiries')
+    .insert({
+      name: d.name,
+      phone: d.phone,
+      message: d.message,
+      package_code: d.packageCode ?? null,
+      channel: 'web',
+      whatsapp_consent: d.whatsappConsent,
+      consent_at: d.whatsappConsent ? new Date().toISOString() : null,
+    })
+    .select('id')
+    .single()
+  if (error) {
+    console.error('enquiry insert failed:', error.message) // message only, never the traveller's details
+    return NextResponse.json({ errors: { form: 'Could not save your enquiry' } }, { status: 500 })
+  }
+  return NextResponse.json({ ok: true, id: data.id, acknowledgement: acknowledgement(d.name) }, { status: 201 })
 }

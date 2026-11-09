@@ -1,4 +1,4 @@
-import { packages } from '@/lib/mock-data'
+import { supabasePublic } from '@/lib/supabase/public'
 import { seasonCoversMonth } from '@/lib/pricing'
 import type { TourPackage } from '@/lib/types'
 
@@ -7,13 +7,19 @@ export type PackageFilters = { q?: string; destination?: string; duration?: Dura
 
 export const durationBand = (days: number): Duration => (days <= 4 ? 'short' : days <= 7 ? 'mid' : 'long')
 
-// Swap these three functions for Supabase queries in the next phase; callers stay the same.
-// Only published packages are ever returned to the public site.
-const published = () => packages.filter((p) => p.status === 'published')
+/**
+ * Reads the public_packages view: the published version of each package, never the draft.
+ * Filtering happens in memory, which is fine for ~60 packages (revisit if the catalogue grows).
+ */
+async function loadPublished(): Promise<TourPackage[]> {
+  const { data, error } = await supabasePublic().from('public_packages').select('content').order('slug')
+  if (error) throw new Error(`Could not load packages: ${error.message}`)
+  return (data ?? []).map((r) => ({ ...(r.content as Omit<TourPackage, 'status'>), status: 'published' as const }))
+}
 
 export async function getPublishedPackages(f: PackageFilters = {}): Promise<TourPackage[]> {
   const q = f.q?.trim().toLowerCase()
-  return published().filter((p) => {
+  return (await loadPublished()).filter((p) => {
     if (q && !`${p.title} ${p.summary} ${p.destinations.join(' ')}`.toLowerCase().includes(q)) return false
     if (f.destination && !p.destinations.includes(f.destination)) return false
     if (f.stars && p.hotelStars < f.stars) return false
@@ -25,9 +31,11 @@ export async function getPublishedPackages(f: PackageFilters = {}): Promise<Tour
 }
 
 export async function getPackageBySlug(slug: string): Promise<TourPackage | null> {
-  return published().find((p) => p.slug === slug) ?? null
+  const { data, error } = await supabasePublic().from('public_packages').select('content').eq('slug', slug).maybeSingle()
+  if (error) throw new Error(`Could not load package: ${error.message}`)
+  return data ? { ...(data.content as Omit<TourPackage, 'status'>), status: 'published' as const } : null
 }
 
 export async function getDestinations(): Promise<string[]> {
-  return [...new Set(published().flatMap((p) => p.destinations))].sort()
+  return [...new Set((await loadPublished()).flatMap((p) => p.destinations))].sort()
 }
