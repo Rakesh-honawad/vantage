@@ -5,7 +5,13 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 const schema = z.object({
   message: z.string().trim().min(10, 'Tell us a little more about your trip').max(2000, 'Please keep this under 2000 characters'),
   name: z.string().trim().min(2, 'Enter your name').max(80),
-  phone: z.string().trim().regex(/^\+?[0-9 ()-]{8,15}$/, 'Enter a valid phone number'),
+  phone: z.string().trim().refine(
+    (v) => {
+      const digits = v.replace(/\D/g, '').length;
+      return /^\+?\d[\d\s()-]*$/.test(v) && digits >= 8 && digits <= 15;
+    },
+    'Enter a valid phone number'
+  ),
   whatsappConsent: z.boolean(),
   packageCode: z.string().max(40).optional(),
   website: z.string().optional(), // honeypot: real people leave this empty

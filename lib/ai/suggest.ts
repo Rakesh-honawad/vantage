@@ -44,7 +44,8 @@ export function suggestPackages(ex: Extraction, pkgs: TourPackage[], limit = 3):
     if (estimate && ex.budgetTotal) {
       withinBudget = estimate <= ex.budgetTotal
       score += withinBudget ? 2 : -1
-      reasons.push(withinBudget ? 'Fits your budget' : 'Above your budget')
+      const kids = (ex.children ?? 0) > 0
+      reasons.push(withinBudget ? (kids ? 'Adults-only estimate is within your budget; child cost is extra' : 'Fits your budget') : 'Above your budget')
     }
     return {
       code: p.code, slug: p.slug, title: p.title, days: p.days, nights: p.nights, hotelStars: p.hotelStars,
