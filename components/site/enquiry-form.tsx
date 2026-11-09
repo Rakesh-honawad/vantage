@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Btn } from './btn'
+import '@/app/inbox.css'
 
 type State = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -10,6 +11,13 @@ export function EnquiryForm({ packageCode, packageTitle }: { packageCode?: strin
   const [state, setState] = useState<State>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [ack, setAck] = useState('')
+  const [trackPath, setTrackPath] = useState('')
+  const pop = useRef<HTMLDialogElement>(null)
+
+  // A small confirmation pops up as soon as the enquiry is saved.
+  useEffect(() => {
+    if (state === 'sent' && pop.current && !pop.current.open) pop.current.showModal()
+  }, [state])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -34,6 +42,7 @@ export function EnquiryForm({ packageCode, packageTitle }: { packageCode?: strin
       }
       if (!res.ok) throw new Error('failed')
       setAck(data.acknowledgement)
+      setTrackPath(data.trackPath ?? '')
       setState('sent')
     } catch {
       setState('error')
@@ -52,6 +61,7 @@ export function EnquiryForm({ packageCode, packageTitle }: { packageCode?: strin
           <span className="eyebrow">Enquiry received</span>
           <h2>Thank you.<br /><em>We will reply within the hour.</em></h2>
           <p>{ack}</p>
+          {trackPath && <p className="ib-track-link">Your consultant&apos;s reply will appear on <Link href={trackPath}>your enquiry page</Link>. Save the link.</p>}
         </div>
       ) : (
         <form className="enquiry-form" onSubmit={onSubmit} noValidate>
@@ -78,6 +88,12 @@ export function EnquiryForm({ packageCode, packageTitle }: { packageCode?: strin
           <Btn type="submit" disabled={state === 'sending'}>{state === 'sending' ? 'Sending' : 'Send enquiry'}</Btn>
         </form>
       )}
+      <dialog ref={pop} className="eq-pop" aria-labelledby="eq-pop-title">
+        <h3 id="eq-pop-title">Enquiry received</h3>
+        <p>{ack}</p>
+        {trackPath && <p>Replies from your consultant will appear on <Link href={trackPath}>your enquiry page</Link>. Save that link.</p>}
+        <form method="dialog"><Btn type="submit" autoFocus>Done</Btn></form>
+      </dialog>
     </section>
   )
 }

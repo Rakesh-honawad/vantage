@@ -1,8 +1,14 @@
+import { loadRedirects } from './redirects.mjs'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ['172.25.48.1'],
   images: {
     unoptimized: true,
+  },
+  // 301 redirects from the old website's URLs. Edit data/redirects.csv, not this file.
+  async redirects() {
+    return loadRedirects()
   },
 }
 

@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <main className="login">
       <div className="login-card">
-        <span className="eyebrow">Kasavu Studio</span>
+        <span className="eyebrow">Rocky Studio</span>
         <h1>Staff sign in</h1>
         <p className="sub">For editors and consultants. Travellers do not need an account.</p>
         <LoginForm next={typeof next === 'string' ? next : ''} />

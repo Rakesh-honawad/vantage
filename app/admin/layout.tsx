@@ -5,7 +5,7 @@ import { AdminNav, type NavItem } from '@/components/admin/admin-nav'
 import { ROLE_LABEL, requireStaff, type Role } from '@/lib/auth'
 import './admin.css'
 
-export const metadata: Metadata = { title: { default: 'Kasavu Studio', template: '%s | Kasavu Studio' }, robots: { index: false } }
+export const metadata: Metadata = { title: { default: 'Rocky Studio', template: '%s | Rocky Studio' }, robots: { index: false } }
 
 const NAV: (NavItem & { roles: Role[] })[] = [
   { href: '/admin/packages', label: 'Packages', roles: ['admin', 'editor'] },
@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="admin">
       <header className="header">
-        <Link href="/admin" className="brand">KASAVU<span>STUDIO</span></Link>
+        <Link href="/admin" className="brand">Rocky<span>STUDIO</span></Link>
         <div className="header-right"><Link href="/" className="mono">View site</Link></div>
       </header>
       <div className="admin-shell">

@@ -10,7 +10,7 @@ import { slugify } from '@/lib/package-rules'
 import { MONTH_NAMES, seasonRange } from '@/lib/pricing'
 
 export const metadata: Metadata = {
-  title: 'Kasavu Travel | Kerala holiday packages',
+  title: 'Rocky Travel | Kerala holiday packages',
   description: 'Unhurried Kerala and South India holiday packages for families, couples and groups.',
 }
 

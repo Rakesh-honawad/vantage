@@ -1,77 +1,104 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { SlaChip } from '@/components/admin/sla-chip'
 import { requireStaff } from '@/lib/auth'
-import { timeAgo } from '@/lib/format'
-import { slaState } from '@/lib/sla'
-import { createClient } from '@/lib/supabase/server'
+import { CHANNEL_LABEL, STATUS_LABEL, enquiryRef, slaFor } from '@/lib/inbox'
+import { supabaseAdmin } from '@/lib/supabase/admin'
+import '../../inbox.css'
 
 export const metadata: Metadata = { title: 'Enquiries' }
+export const dynamic = 'force-dynamic'
 
-const STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost'] as const
-const CHANNELS: Record<string, string> = { web: 'Web form', whatsapp: 'WhatsApp', email: 'Email', phone: 'Phone', chat: 'Chat' }
-const pick = (v: string | string[] | undefined, allowed: readonly string[]) => {
-  const s = Array.isArray(v) ? v[0] : v
-  return s && allowed.includes(s) ? s : undefined
-}
+const VIEWS = [
+  ['open', 'Open'],
+  ['mine', 'Mine'],
+  ['unassigned', 'Unassigned'],
+  ['closed', 'Won and lost'],
+  ['all', 'All'],
+] as const
 
-type Row = { id: string; name: string; channel: string; message: string; status: string; created_at: string; reply_sent_at: string | null; assignee: { full_name: string } | null }
-
-export default async function Inbox({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function EnquiriesPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const staff = await requireStaff(['admin', 'consultant'])
   const sp = await searchParams
-  const status = pick(sp.status, STATUSES)
-  const channel = pick(sp.channel, Object.keys(CHANNELS))
-  const who = pick(sp.who, ['mine', 'unassigned'])
+  const view = VIEWS.some(([v]) => v === sp.view) ? (sp.view as string) : 'open'
+  const sb = supabaseAdmin()
 
-  const supabase = await createClient()
-  let q = supabase
+  let q = sb
     .from('enquiries')
-    .select('id, name, channel, message, status, created_at, reply_sent_at, assignee:profiles(full_name)')
+    .select('id, name, channel, message, status, assignee_id, created_at, first_response_at')
     .order('created_at', { ascending: false })
     .limit(200)
-  if (status) q = q.eq('status', status)
-  if (channel) q = q.eq('channel', channel)
-  if (who === 'mine') q = q.eq('assignee_id', staff.id)
-  if (who === 'unassigned') q = q.is('assignee_id', null)
-  const { data, error } = await q
-  if (error) throw new Error(`Could not load enquiries: ${error.message}`)
-  const rows = (data ?? []) as unknown as Row[]
+  // A consultant only ever receives their own enquiries and the unassigned pool.
+  if (staff.role === 'consultant') q = q.or(`assignee_id.eq.${staff.id},assignee_id.is.null`)
+  if (view === 'open') q = q.not('status', 'in', '(won,lost)') // anything not closed counts as open, whatever the default status word is
+  if (view === 'closed') q = q.in('status', ['won', 'lost'])
+  if (view === 'mine') q = q.eq('assignee_id', staff.id)
+  if (view === 'unassigned') q = q.is('assignee_id', null)
+  // Total this person may see, ignoring the tab, so an empty tab can say "there are N in All".
+  let cq = sb.from('enquiries').select('id', { count: 'exact', head: true })
+  if (staff.role === 'consultant') cq = cq.or(`assignee_id.eq.${staff.id},assignee_id.is.null`)
+  const [{ data, error }, { data: people }, { count: total }] = await Promise.all([q, sb.from('profiles').select('id, full_name'), cq])
 
-  const now = new Date()
-  const states = rows.map((r) => slaState({ createdAt: r.created_at, repliedAt: r.reply_sent_at, status: r.status }, now))
-  const open = rows.filter((r) => ['new', 'contacted', 'quoted'].includes(r.status)).length
-  const overdue = states.filter((s) => s.kind === 'breached').length
+  if (error) {
+    return (
+      <div className="admin-title">
+        <div>
+          <span className="eyebrow">Inbox</span>
+          <h1>Enquiries</h1>
+          <p className="admin-sub">The inbox needs one database update. Run supabase/migrations/003_inbox.sql in the Supabase SQL editor, then reload.</p>
+        </div>
+      </div>
+    )
+  }
+  const names = new Map((people ?? []).map((p) => [p.id as string, p.full_name as string]))
+  const rows = data ?? []
 
   return (
     <>
       <div className="admin-title">
-        <div><span className="eyebrow">Inbox &middot; {open} open &middot; {overdue} overdue</span><h1>Enquiries</h1></div>
-      </div>
-      <form className="inbox-filters" method="get">
-        <select name="status" defaultValue={status ?? ''} aria-label="Status"><option value="">All statuses</option>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select>
-        <select name="channel" defaultValue={channel ?? ''} aria-label="Channel"><option value="">All channels</option>{Object.entries(CHANNELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-        <select name="who" defaultValue={who ?? ''} aria-label="Owner"><option value="">Everyone</option><option value="mine">Assigned to me</option><option value="unassigned">Unassigned</option></select>
-        <button type="submit" className="btn btn-outline">Apply</button>
-        <Link href="/admin/enquiries" className="clear-link">Clear</Link>
-      </form>
-      {rows.length === 0 ? (
-        <div className="admin-empty"><h3>No enquiries match.</h3><p>Try clearing the filters.</p></div>
-      ) : (
-        <div className="inbox">
-          {rows.map((r, i) => (
-            <Link key={r.id} href={`/admin/enquiries/${r.id}`} className={`inquiry ${r.status === 'new' ? 'unread' : ''}`}>
-              <span className="channel" aria-hidden="true">{(CHANNELS[r.channel] ?? r.channel).charAt(0)}</span>
-              <div>
-                <strong>{r.name}</strong>
-                <p>{r.message}</p>
-                <SlaChip state={states[i]} />
-              </div>
-              <span className={`status ${r.status}`}>{r.status}</span>
-              <span className="assignee">{r.assignee?.full_name ?? 'Unassigned'}<small>{timeAgo(r.created_at)}</small></span>
-            </Link>
-          ))}
+        <div>
+          <span className="eyebrow">Inbox</span>
+          <h1>Enquiries</h1>
+          <p className="admin-sub">
+            {staff.role === 'admin' ? 'You can see every enquiry and assign it to a consultant.' : 'You see enquiries assigned to you and the unassigned pool. Open one to take it.'} Replies are due within the hour.
+          </p>
         </div>
+      </div>
+      <nav className="ib-views" aria-label="Filter enquiries">
+        {VIEWS.map(([v, label]) => (
+          <Link key={v} href={`/admin/enquiries?view=${v}`} className={v === view ? 'on' : ''} aria-current={v === view ? 'page' : undefined}>{label}</Link>
+        ))}
+      </nav>
+      {rows.length === 0 ? (
+        <div className="admin-empty">
+          <h3>Nothing in this tab.</h3>
+          {(total ?? 0) > 0 && view !== 'all' ? (
+            <p>There {total === 1 ? 'is 1 enquiry' : `are ${total} enquiries`} in total. <Link href="/admin/enquiries?view=all" className="link-btn">Show all</Link></p>
+          ) : staff.role === 'consultant' ? (
+            <p>Nothing is assigned to you yet. New website enquiries are given to the consultant with the fewest open ones.</p>
+          ) : (
+            <p>No enquiries have been saved yet. Send one from the website&apos;s Enquire page and it appears here.</p>
+          )}
+        </div>
+      ) : (
+        <ul className="ib-list">
+          {rows.map((r) => {
+            const sla = slaFor(r.created_at as string, (r.first_response_at as string | null) ?? null, r.status as string)
+            return (
+              <li key={r.id as string}>
+                <Link href={`/admin/enquiries/${r.id}`} className="ib-row">
+                  <div className="ib-who">
+                    <strong>{r.name as string}</strong>
+                    <small>{enquiryRef(r.id as string)}, {CHANNEL_LABEL[r.channel as string] ?? r.channel}</small>
+                  </div>
+                  <p className="ib-preview">{r.message as string}</p>
+                  <span className="ib-assignee">{r.assignee_id ? names.get(r.assignee_id as string) ?? 'Unknown' : 'Unassigned'}</span>
+                  <span className="ib-pill" data-s={r.status as string}>{STATUS_LABEL[r.status as string] ?? r.status}</span>
+                  <span className={`ib-sla${sla.overdue ? ' late' : ''}${sla.done ? ' done' : ''}`}>{sla.label}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
       )}
     </>
   )

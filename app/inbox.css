@@ -1,0 +1,89 @@
+/* Phase D: enquiry inbox, traveller enquiry page and confirmation popup. Uses the existing palette. */
+.ib-views{display:flex;gap:4px;margin:26px 0 8px;border-bottom:1px solid #cdbb94;overflow-x:auto}
+.ib-views a{padding:12px 18px;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap}
+.ib-views a.on{border-bottom-color:var(--action);font-weight:600}
+
+.ib-list{list-style:none;margin:0;padding:0}
+.ib-row{display:grid;grid-template-columns:minmax(150px,1.1fr) 2.4fr 110px 100px 150px;gap:20px;align-items:center;padding:18px 6px;border-bottom:1px solid #cdbb94;color:inherit}
+.ib-row:hover{background:#e7deca}
+.ib-who strong{display:block;font-weight:600}
+.ib-who small,.ib-assignee{color:var(--muted);font-size:12px}
+.ib-preview{color:var(--muted);font-size:13px;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ib-pill{display:inline-block;font:10px 'DM Mono';letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--gold);padding:3px 8px;justify-self:start}
+.ib-pill[data-s=new]{background:var(--action);color:var(--surface);border-color:var(--action)}
+.ib-pill[data-s=won]{color:var(--action);border-color:var(--action)}
+.ib-pill[data-s=lost]{color:var(--muted);border-color:#cdbb94}
+.ib-sla{font-size:12px;color:var(--muted)}
+.ib-sla.late{color:#8a3b2c;font-weight:600}
+.ib-sla.done{color:var(--action)}
+
+.ib-back{margin:0 0 18px;font-size:12px}
+.ib-back a{text-decoration:underline}
+.ib-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--gold)}
+.ib-head h1{font-size:44px;margin:10px 0 8px}
+.ib-head-r{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ib-meta{color:var(--muted);font-size:13px}
+.ib-msg{margin-top:16px;font-size:13px;padding:12px 14px;border:1px solid var(--gold);background:var(--surface)}
+.ib-msg.bad{border-color:#8a3b2c;color:#8a3b2c}
+.ib-cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:36px;margin-top:28px;align-items:start}
+.ib-main,.ib-side{display:flex;flex-direction:column;gap:22px;min-width:0}
+.ib-card{border:1px solid var(--gold);background:var(--surface);padding:22px;display:flex;flex-direction:column;gap:14px}
+.ib-card h3{font:11px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.ib-card h4{font:500 14px Manrope;margin-top:6px}
+.ib-card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ib-card .btn{padding:11px 16px;min-height:42px}
+.ib-quote{font-size:15px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.ib-hint{color:var(--muted);font-size:12px;line-height:1.6;max-width:62ch}
+.ib-owner{font:300 24px Fraunces}
+.ib-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.ib-fields .wide{grid-column:1/-1}
+.ib-sugg{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.ib-sugg li{display:flex;flex-direction:column;gap:3px;padding:14px 0;border-top:1px solid #cdbb94;font-size:13px}
+.ib-sugg small{color:var(--muted);font-size:11px}
+.ib-thread{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
+.ib-thread li{border-left:2px solid var(--gold);padding-left:14px}
+.ib-thread small{color:var(--muted);font-size:11px}
+.ib-thread p{margin-top:6px;white-space:pre-wrap;line-height:1.7;font-size:14px;overflow-wrap:anywhere}
+.ib-compose{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.ib-compose textarea,.ib-detail select,.ib-detail .fld input{background:var(--canvas);border:1px solid #cdbb94;padding:12px;font-size:14px;width:100%}
+.ib-notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.ib-notes li{font-size:13px;line-height:1.5}
+.ib-notes small{color:var(--muted);font-size:11px}
+
+.ib-activity{list-style:none;margin:26px 0 0;padding:0}
+.ib-activity li{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid #cdbb94;font-size:13px}
+.ib-activity small{color:var(--muted);font-size:12px;white-space:nowrap}
+
+.ib-track{max-width:720px;margin:0 auto;padding:70px 5vw 90px;display:flex;flex-direction:column;gap:30px}
+.ib-track h1{font-size:clamp(44px,7vw,72px)}
+.ib-track h3{font:11px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.ib-track-status{font-size:17px;line-height:1.6}
+.ib-track-link{margin-top:14px;font-size:13px}
+.ib-track-link a,.eq-pop a{text-decoration:underline}
+
+.eq-pop{margin:auto;border:1px solid var(--gold);background:var(--canvas);color:var(--ink);padding:30px;max-width:440px;width:calc(100% - 32px)}
+.eq-pop::backdrop{background:#1f2a2480}
+.eq-pop h3{font:300 30px Fraunces;letter-spacing:-.02em;margin-bottom:12px}
+.eq-pop p{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:12px}
+.eq-pop form{margin-top:18px;display:flex;justify-content:flex-end}
+
+@media(max-width:900px){
+  .ib-cols{grid-template-columns:1fr}
+  .ib-row{grid-template-columns:1fr auto;gap:8px 14px}
+  .ib-preview{grid-column:1/-1;order:3}
+  .ib-assignee{order:4}
+  .ib-sla{order:5;grid-column:1/-1}
+  .ib-head h1{font-size:32px}
+  .ib-head-r{align-items:flex-start}
+  .ib-fields{grid-template-columns:1fr}
+}
+
+/* Form field and link-button styles, repeated here so the inbox does not depend on the package editor's stylesheet. */
+.ib-detail .fld{display:flex;flex-direction:column;gap:6px;font:12px Manrope;text-transform:none;letter-spacing:0;color:var(--ink);min-width:0}
+.ib-detail .fld small{color:var(--muted);font-size:11px}
+.link-btn{font-size:12px;text-decoration:underline;padding:8px 0;color:var(--action)}
+.link-btn:disabled{opacity:.4;cursor:default}
+
+/* Privacy page */
+.ib-legal h2{font:300 28px Fraunces;letter-spacing:-.02em;margin-bottom:10px}
+.ib-legal section p{font-size:14px;line-height:1.8;color:var(--ink);max-width:62ch}
