@@ -8,3 +8,6 @@ export function timeAgo(iso: string, now: number = Date.now()): string {
   const d = Math.floor(h / 24)
   return `${d} ${d === 1 ? 'day' : 'days'} ago`
 }
+
+export const formatIST = (iso: string) =>
+  new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(iso))

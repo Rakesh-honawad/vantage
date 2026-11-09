@@ -6,12 +6,15 @@ import { Header } from '@/components/site/header'
 import { PackageCard } from '@/components/site/package-card'
 import { getDestinations, getPublishedPackages } from '@/lib/data/packages'
 import { photo } from '@/lib/mock-data'
+import { slugify } from '@/lib/package-rules'
 import { MONTH_NAMES, seasonRange } from '@/lib/pricing'
 
 export const metadata: Metadata = {
   title: 'Kasavu Travel | Kerala holiday packages',
   description: 'Unhurried Kerala and South India holiday packages for families, couples and groups.',
 }
+
+export const revalidate = 60
 
 export default async function Home() {
   const [all, destinations] = await Promise.all([getPublishedPackages(), getDestinations()])
@@ -79,7 +82,7 @@ export default async function Home() {
           <div className="section-head"><div><span className="eyebrow">Places to pause</span><h2>Where will you go?</h2></div></div>
           <div className="destinations">
             {destinations.map((d, i) => (
-              <Link key={d} href={`/packages?destination=${encodeURIComponent(d)}`}>
+              <Link key={d} href={`/destinations/${slugify(d)}`}>
                 <span>{String(i + 1).padStart(2, '0')}</span><strong>{d}</strong><i aria-hidden="true">&#8599;</i>
               </Link>
             ))}
