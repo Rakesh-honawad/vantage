@@ -4,7 +4,7 @@ import './globals.css'
 import './extra.css'
 
 export const metadata: Metadata = {
-  title: 'Kasavu Travel — Kerala, in its own time.',
+  title: 'Rocky Travel — Kerala, in its own time.',
   description: 'Thoughtful journeys through the backwaters, forests and tea hills of Kerala.',
   generator: 'v0.app',
   icons: {

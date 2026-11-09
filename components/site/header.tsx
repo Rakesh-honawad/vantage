@@ -10,7 +10,7 @@ const links = [
 export function Header() {
   return (
     <header className="header">
-      <Link href="/" className="brand">KASAVU<span>TRAVEL</span></Link>
+      <Link href="/" className="brand">Rocky<span>TRAVEL</span></Link>
       <nav aria-label="Main">
         {links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
       </nav>

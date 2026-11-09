@@ -1,93 +1,52 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { SlaChip } from '@/components/admin/sla-chip'
+import { EnquiryDetail } from '@/components/admin/enquiry-detail'
+import type { Extraction } from '@/lib/ai/schema'
+import type { Suggestion } from '@/lib/ai/suggest'
 import { requireStaff } from '@/lib/auth'
-import { formatIST } from '@/lib/format'
-import { slaState } from '@/lib/sla'
-import { createClient } from '@/lib/supabase/server'
-import { addNote, updateEnquiry } from '../actions'
+import { enquiryRef, isUuid, type EnquiryView, type Note, type Reply, type StaffOption } from '@/lib/inbox'
+import { supabaseAdmin } from '@/lib/supabase/admin'
+import '../../../inbox.css'
 
 export const metadata: Metadata = { title: 'Enquiry' }
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const CHANNELS: Record<string, string> = { web: 'Web form', whatsapp: 'WhatsApp', email: 'Email', phone: 'Phone', chat: 'Chat' }
-const STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost']
+export const dynamic = 'force-dynamic'
 
-export default async function EnquiryPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; e?: string }> }) {
+export default async function EnquiryPage({ params }: { params: Promise<{ id: string }> }) {
   const staff = await requireStaff(['admin', 'consultant'])
   const { id } = await params
-  if (!UUID.test(id)) notFound()
-  const sp = await searchParams
-  const supabase = await createClient()
-  const [{ data: e }, { data: notes }, { data: people }] = await Promise.all([
-    supabase.from('enquiries').select('*, assignee:profiles(full_name)').eq('id', id).maybeSingle(),
-    supabase.from('enquiry_notes').select('id, body, created_at, author:profiles(full_name)').eq('enquiry_id', id).order('created_at', { ascending: false }),
-    supabase.from('profiles').select('id, full_name, role').in('role', ['admin', 'consultant']).order('full_name'),
-  ])
+  if (!isUuid(id)) notFound()
+  const sb = supabaseAdmin()
+  const { data: e } = await sb.from('enquiries').select('*').eq('id', id).maybeSingle()
   if (!e) notFound()
+  // A consultant cannot open an enquiry that belongs to a colleague.
+  if (staff.role === 'consultant' && e.assignee_id && e.assignee_id !== staff.id) notFound()
 
-  const sla = slaState({ createdAt: e.created_at, repliedAt: e.reply_sent_at, status: e.status })
-  const owners = staff.role === 'admin' ? (people ?? []) : (people ?? []).filter((p) => p.id === staff.id)
+  const [{ data: people }, { data: notes }, { data: replies }] = await Promise.all([
+    sb.from('profiles').select('id, full_name, role'),
+    sb.from('enquiry_notes').select('*').eq('enquiry_id', id),
+    sb.from('enquiry_replies').select('*').eq('enquiry_id', id).order('created_at', { ascending: true }),
+  ])
+  const name = new Map((people ?? []).map((p) => [p.id as string, p.full_name as string]))
+
+  const view: EnquiryView = {
+    id, ref: enquiryRef(id), name: e.name, phone: e.phone ?? '', channel: e.channel ?? 'web', message: e.message ?? '', status: e.status ?? 'new',
+    assigneeId: e.assignee_id ?? null, assigneeName: e.assignee_id ? name.get(e.assignee_id) ?? null : null,
+    createdAt: e.created_at, firstResponseAt: e.first_response_at ?? null, whatsappConsent: !!e.whatsapp_consent, packageCode: e.package_code ?? null,
+    trackPath: e.public_token ? `/enquiry/${e.public_token}` : null,
+    extracted: (e.extracted as Extraction | null) ?? null, suggestions: (e.ai_suggestions as Suggestion[] | null) ?? null,
+    aiDraft: e.ai_draft ?? null, aiSource: e.ai_source ?? null, aiAt: e.ai_at ?? null,
+  }
+  const replyList: Reply[] = (replies ?? []).map((r) => ({ id: r.id, body: r.body, createdAt: r.created_at, author: name.get(r.author_id) ?? 'Consultant', delivery: r.delivery ?? 'link' }))
+  const noteList: Note[] = (notes ?? [])
+    .map((n) => ({ id: String(n.id ?? n.created_at ?? Math.random()), body: n.body as string, createdAt: (n.created_at as string | undefined) ?? null, author: name.get(n.author_id) ?? 'Staff' }))
+    .sort((a, b) => (a.createdAt ?? '').localeCompare(b.createdAt ?? ''))
+  const staffOptions: StaffOption[] = (people ?? []).filter((p) => p.role === 'consultant' || p.role === 'admin').map((p) => ({ id: p.id, name: p.full_name, role: p.role }))
 
   return (
     <>
-      <div className="admin-title">
-        <div>
-          <Link href="/admin/enquiries" className="clear-link">All enquiries</Link>
-          <h1>{e.name}</h1>
-          <p className="admin-sub">{CHANNELS[e.channel] ?? e.channel} &middot; received {formatIST(e.created_at)} &middot; <SlaChip state={sla} /></p>
-        </div>
-      </div>
-      {sp.ok && <p className="editor-msg" role="status">Saved.</p>}
-      {sp.e && <p className="form-error editor-msg" role="alert">{sp.e}</p>}
-
-      <div className="enq-grid">
-        <div className="enq-col">
-          <section className="panel"><h3>Message</h3><p className="msg">{e.message}</p></section>
-          <section className="panel">
-            <h3>Contact</h3>
-            <p><a href={`tel:${String(e.phone).replace(/\s/g, '')}`}>{e.phone}</a>{e.email ? <> &middot; {e.email}</> : null}</p>
-            <p className={e.whatsapp_consent ? 'consent yes' : 'consent no'}>
-              {e.whatsapp_consent ? `Agreed to WhatsApp follow-ups${e.consent_at ? ` on ${formatIST(e.consent_at)}` : ''}.` : 'No WhatsApp consent. Contact by phone or email only.'}
-            </p>
-            {e.package_code && <p className="admin-sub">Asked about {e.package_code}</p>}
-          </section>
-        </div>
-
-        <div className="enq-col">
-          <section className="panel">
-            <h3>Status and owner</h3>
-            <form action={updateEnquiry} className="ef-form">
-              <input type="hidden" name="id" value={e.id} />
-              <label className="ef">Status<select name="status" defaultValue={e.status}>{STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}</select></label>
-              <label className="ef">Assigned to
-                <select name="assignee" defaultValue={e.assignee_id ?? ''}>
-                  <option value="">Unassigned</option>
-                  {owners.map((p) => <option key={p.id} value={p.id}>{p.full_name}{p.id === staff.id ? ' (me)' : ''}</option>)}
-                </select>
-              </label>
-              <button type="submit" className="btn">Save</button>
-            </form>
-            <p className="admin-sub">Moving an enquiry out of &ldquo;new&rdquo; counts as the first reply and stops the one-hour clock.</p>
-          </section>
-
-          <section className="panel">
-            <h3>Notes</h3>
-            <form action={addNote} className="ef-form">
-              <input type="hidden" name="id" value={e.id} />
-              <label className="ef grow">Add a note<textarea name="body" rows={3} maxLength={2000} required /></label>
-              <button type="submit" className="btn btn-outline">Save note</button>
-            </form>
-            {(notes ?? []).length === 0 && <p className="admin-sub">No notes yet.</p>}
-            {(notes ?? []).map((n) => (
-              <div className="note-item" key={n.id}>
-                <p>{n.body}</p>
-                <small>{(n.author as unknown as { full_name: string } | null)?.full_name ?? 'Unknown'} &middot; {formatIST(n.created_at)}</small>
-              </div>
-            ))}
-          </section>
-        </div>
-      </div>
+      <p className="ib-back"><Link href="/admin/enquiries">Back to enquiries</Link></p>
+      <EnquiryDetail view={view} replies={replyList} notes={noteList} staffOptions={staffOptions} me={{ id: staff.id, role: staff.role, name: staff.name }} />
     </>
   )
 }

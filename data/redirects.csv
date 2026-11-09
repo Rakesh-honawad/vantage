@@ -1,0 +1,8 @@
+# Old URL, new URL. One pair per line, comma separated. Lines starting with # are ignored.
+# All redirects are permanent (301) so search engines move their ranking to the new page.
+# An old URL with a query string is matched exactly, for example: /tours.php?id=7,/packages/your-new-slug
+# Paste the 140 old URLs here, then run: npm run build   (it prints any line it skipped and any redirect chain).
+#
+# Examples (safe to keep or delete):
+/old-packages,/packages
+/tours.php?id=7,/packages

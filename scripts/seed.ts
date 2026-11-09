@@ -24,7 +24,7 @@ function check(label: string, error: { message: string } | null) {
 }
 
 const staff = [
-  { key: 'meera', email: 'meera.admin@example.com', name: 'Meera Nair', role: 'admin' },
+  { key: 'rakesh', email: 'rakesh.admin@example.com', name: 'Rakesh Honawad', role: 'admin' },
   { key: 'devika', email: 'devika.editor@example.com', name: 'Devika Rao', role: 'editor' },
   { key: 'arun', email: 'arun.consultant@example.com', name: 'Arun Pillai', role: 'consultant' },
 ]
@@ -97,7 +97,7 @@ async function seedPackages(adminId: string) {
 
 async function seedEnquiries(ids: Record<string, string>) {
   const channel: Record<string, string> = { 'Web form': 'web', WhatsApp: 'whatsapp', Email: 'email', Phone: 'phone', Chat: 'chat' }
-  const assignee: Record<string, string | undefined> = { Meera: ids.meera, Arun: ids.arun }
+  const assignee: Record<string, string | undefined> = { Rakesh: ids.rakesh, Arun: ids.arun }
   const minutesAgo = [35, 140, 1560, 1700, 4300]
   const { error: de } = await sb.from('enquiries').delete().like('phone', '+91 90000 0000%')
   check('clear old sample enquiries', de)
@@ -116,16 +116,16 @@ async function seedEnquiries(ids: Record<string, string>) {
   check('insert enquiries', error)
   const first = data!.find((r) => r.name === 'Ananya Menon')
   if (first) {
-    const { error: ne } = await sb.from('enquiry_notes').insert({ enquiry_id: first.id, author_id: ids.meera, body: 'Called once, no answer. Will try again at 4pm.' })
+    const { error: ne } = await sb.from('enquiry_notes').insert({ enquiry_id: first.id, author_id: ids.rakesh, body: 'Called once, no answer. Will try again at 4pm.' })
     check('note', ne)
   }
 }
 
 async function main() {
   const ids = await seedStaff()
-  await seedPackages(ids.meera)
+  await seedPackages(ids.rakesh)
   await seedEnquiries(ids)
   console.log('Seeded: 3 staff, %d packages, %d enquiries', packages.length, enquiries.length)
-  console.log('Demo logins: meera.admin@example.com, devika.editor@example.com, arun.consultant@example.com')
+  console.log('Demo logins: rakesh.admin@example.com, devika.editor@example.com, arun.consultant@example.com')
 }
 main()

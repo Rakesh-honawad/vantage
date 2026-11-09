@@ -25,7 +25,7 @@ const common = {
   exclusions: ['Flights and train fares', 'Lunch and personal expenses', 'Entry fees and camera charges', 'Travel insurance'],
   cancellationNote: 'Dates can be changed free of charge up to 30 days before travel. Cancellation charges apply after that and are confirmed in your quote.',
   updatedAt: '2026-11-07T09:30:00+05:30',
-  updatedBy: 'Meera Nair',
+  updatedBy: 'Rakesh Honawad',
 }
 const stop = (name: string, lat: number, lng: number) => ({ name, lat, lng })
 
@@ -108,16 +108,16 @@ export const packages: TourPackage[] = [
 
 // Sample enquiry text is from the brief; the other people and messages are invented.
 export const enquiries: Enquiry[] = [
-  { id: 'ENQ-1042', name: 'Ananya Menon', channel: 'WhatsApp', preview: 'Hi, 2 adults and 1 kid, Kerala 5-6 nights in December, budget around 1.2 lakh total, houseboat a must', status: 'New', assignee: 'Meera', time: '10:42', unread: true },
-  { id: 'ENQ-1041', name: 'Rohit Sharma', channel: 'Web form', preview: 'Looking for a relaxed honeymoon itinerary around Kumarakom.', status: 'Quoted', assignee: 'Arun', time: '09:18' },
+  { id: 'ENQ-1042', name: 'Ananya Menon', channel: 'WhatsApp', preview: 'Hi, 2 adults and 1 kid, Kerala 5-6 nights in December, budget around 1.2 lakh total, houseboat a must', status: 'New', assignee: 'Rakesh', time: '10:42', unread: true },
+  { id: 'ENQ-1041', name: 'Rohit Sharma', channel: 'Web form', preview: 'Looking for a relaxed honeymoon itinerary around Kumarakom.', status: 'Quoted', assignee: 'Rakesh', time: '09:18' },
   { id: 'ENQ-1040', name: 'Elena Garcia', channel: 'Email', preview: 'Could you share your best monsoon rates for 4 nights?', status: 'Contacted', assignee: 'Devika', time: 'Yesterday' },
-  { id: 'ENQ-1039', name: 'Vivek Krishnan', channel: 'Phone', preview: 'Family of five, prefer 4 star hotels and an easy pace.', status: 'Won', assignee: 'Meera', time: 'Yesterday' },
+  { id: 'ENQ-1039', name: 'Vivek Krishnan', channel: 'Phone', preview: 'Family of five, prefer 4 star hotels and an easy pace.', status: 'Won', assignee: 'Rakesh', time: 'Yesterday' },
   { id: 'ENQ-1038', name: 'Maya and Liam', channel: 'Chat', preview: 'Is the Alleppey houseboat private? We travel in October.', status: 'Lost', assignee: 'Arun', time: 'Tue' },
 ]
 
 export const activity: [string, string, string][] = [
-  ['Meera Nair', 'Published PKG-KL-07, version 4', '2 hours ago'],
-  ['Arun Pillai', 'Assigned ENQ-1042 to Meera', '3 hours ago'],
+  ['Rakesh Honawad', 'Published PKG-KL-07, version 4', '2 hours ago'],
+  ['Arun Pillai', 'Assigned ENQ-1042 to Rakesh', '3 hours ago'],
   ['Devika Rao', 'Duplicated PKG-KL-14 as a draft', 'Yesterday'],
-  ['Meera Nair', 'Changed Monsoon price on PKG-KL-03', 'Yesterday'],
+  ['Rakesh Honawad', 'Changed Monsoon price on PKG-KL-03', 'Yesterday'],
 ]
