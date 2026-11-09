@@ -16,8 +16,13 @@ export function extractWithRules(text: string, known: string[]): Extraction {
   }
   let adults = first(/\b(\d+|one|two|three|four|five|six|seven|eight)\s+(?:adults?|people|persons|pax|of us|guests)\b/)
   if (adults == null && /\b(couple|honeymoon)\b/.test(t)) adults = 2
-  const children = first(/\b(\d+|a|an|one|two|three|four)\s+(?:kids?|child(?:ren)?|toddlers?|infants?)\b/)
-
+  let children = first(/\b(\d+|a|an|one|two|three|four)\s+(?:kids?|child(?:ren)?|toddlers?|infants?)\b/)
+    // "family of 4": assume 2 adults, the rest children. The consultant corrects it beside the message.
+  const fam = t.match(/\bfamily of (\d+|three|four|five|six|seven|eight)\b/)
+  if (fam && adults == null) {
+    const n = toNum(fam[1]) ?? 0
+    if (n >= 2) { adults = 2; if (children == null) children = n - 2 || null }
+  }
   let month: number | null = null
   const named = t.match(/\b(january|february|march|april|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sept?|oct|nov|dec)\b/)
   if (named) month = MONTHS.indexOf(named[1].slice(0, 3)) + 1
@@ -49,7 +54,7 @@ export function extractWithRules(text: string, known: string[]): Extraction {
   return {
     adults, children, month, nights, nightsMax, budgetTotal: budget,
     destinations: known.filter((d) => t.includes(d.toLowerCase())).slice(0, 8),
-    interests: INTERESTS.filter((i) => t.includes(i)),
+    interests: INTERESTS.filter((i) => new RegExp(`\\b${i}(?:s|es)?\\b`).test(t)),
   }
 }
 
