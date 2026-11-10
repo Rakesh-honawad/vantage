@@ -8,6 +8,24 @@ Rocky Travel lets travellers explore holiday packages, read travel articles and 
 
 ---
 
+## Demo Staff Login
+
+The Rocky Travel staff workspace supports three demo roles.
+
+| Role | Login Email |
+|---|---|
+| Admin | `rakesh.admin@example.com` |
+| Editor | `devika.editor@example.com` |
+| Consultant | `arun.consultant@example.com` |
+
+**Login URL:** https://touroperatorswebsite.vercel.app/login
+
+**Password:** Rakesh1432rk
+
+> **Security:** Demo credentials are provided for demonstration purposes only.
+
+---
+
 ## Contents
 
 1. [At a glance](#1-at-a-glance)
