@@ -3,10 +3,6 @@ a{color:inherit;text-decoration:none}
 a.btn{display:inline-flex;align-items:center;justify-content:center}
 a.pkg-card{display:block}
 .header .brand{display:block}
-.menu{display:none;position:relative}
-.menu summary{list-style:none;cursor:pointer;font-size:12px}
-.menu summary::-webkit-details-marker{display:none}
-.menu div{position:absolute;right:0;top:34px;background:var(--surface);border:1px solid var(--gold);padding:14px 18px;display:flex;flex-direction:column;gap:14px;min-width:160px;z-index:10}
 .searchbar select{border:0;background:transparent;font-size:12px;padding:0;min-width:130px}
 .filters{flex-wrap:wrap}
 .filters select{min-width:150px}
@@ -34,6 +30,7 @@ a.pkg-card{display:block}
 .route-map text{font:11px Manrope;fill:var(--ink)}
 .route-map figcaption{margin-top:8px;font:10px 'DM Mono';color:var(--muted)}
 .price-table{width:100%;border-collapse:collapse;font-size:13px}
+
 .price-table th{font:10px 'DM Mono';color:var(--muted);text-align:left;padding:10px 0;border-top:1px solid var(--gold);text-transform:uppercase;letter-spacing:.1em}
 .price-table td{padding:13px 0;border-top:1px solid #cdbb94}
 .price-table small{color:var(--muted);font-size:10px;margin-left:6px}
@@ -43,36 +40,111 @@ a.pkg-card{display:block}
 .field-error,.form-error{color:#9b5f3f;font-size:11px;margin-top:6px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .enquiry-form .btn:disabled{opacity:.6;cursor:wait}
+.enquiry-form .field{display:flex;flex-direction:column;gap:0}
+.detail-hero .eyebrow{color:#efe3c4}
 /* Fixes for two rules in globals.css that lost a space */
 .admin-shell{min-height:calc(100vh - 82px)}
 .inquiry{grid-template-columns:38px 2fr 90px 100px}
+
+/* ===== Header: compact Enquire button; on phones the links become a row under the logo ===== */
+.header nav a,footer a{font-size:12px}
+.header .btn{padding:0 16px !important;min-height:38px !important;font-size:12px !important}
+.menu{display:none !important} /* old hamburger, no longer used: phones show the link row instead */
+
+/* ===== Footer ===== */
+footer>div.footer-note{display:block}
+footer .footer-note a{font-size:inherit;text-decoration:underline}
+
+/* ===== Phones ===== */
 @media(max-width:800px){
-  .menu{display:block}
-  .header nav{display:none}
+  .header{height:auto;flex-wrap:wrap;padding:12px 5vw 0;row-gap:4px}
+  .header nav{display:flex !important;order:3;width:100%;margin:0;gap:24px;padding:10px 0 12px;border-top:1px solid #cdbb94;overflow-x:auto;white-space:nowrap}
+  .header-right{gap:10px}
+  .header .btn{padding:0 14px !important;min-height:36px !important}
   .detail-extras{grid-template-columns:1fr;padding:0 5vw 100px;gap:50px}
   .day-body{padding-left:67px}
+
   .enquiry{padding-bottom:110px}
   .mobile-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;justify-content:space-between;align-items:center;gap:16px;padding:12px 5vw calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--gold)}
   .mobile-bar strong{font:23px Fraunces}
   .mobile-bar span{display:block;font:9px 'DM Mono';color:var(--muted);text-transform:uppercase}
-}
-@media(prefers-reduced-motion:reduce){.pkg-skeleton{animation:none}html{scroll-behavior:auto}.day .plus{transition:none}}
-/* Menu and responsive fixes */
-.header nav a,.menu a,footer a{font-size:12px}
-.menu summary{padding:10px 0}
-.menu[open] summary{text-decoration:underline}
-.menu div{top:44px}
-.menu a{display:block;padding:10px 0}
-footer>div.footer-note{display:block}
-footer .footer-note a{font-size:inherit;text-decoration:underline}
-.enquiry-form .field{display:flex;flex-direction:column;gap:0}
-@media(max-width:800px){
   .searchbar select,.filters select{min-width:0;width:100%}
   .filters .clear{align-self:center}
   .enquiry-form>div{grid-template-columns:1fr}
   .price-table td small{display:block;margin:4px 0 0}
   body:has(.mobile-bar) footer{padding-bottom:110px}
 }
+@media(prefers-reduced-motion:reduce){.pkg-skeleton{animation:none}html{scroll-behavior:auto}.day .plus{transition:none}}
 
-.detail-hero .eyebrow{color:#efe3c4}
-.header-cta{padding:10px 18px;min-height:40px;font-size:12px}
+/* ===== Public blog (uses the site's cream, green and gold) ===== */
+.blog-shell,.blog-detail-shell{max-width:1200px;margin:0 auto;padding:60px 5vw 80px}
+.blog-hero{margin-bottom:28px}
+.blog-filters{display:flex;flex-wrap:wrap;gap:10px;max-width:1200px;margin:0 auto 32px;padding:0 5vw}
+.blog-chip{display:inline-flex;align-items:center;padding:8px 14px;border:1px solid var(--gold);font:10px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.blog-chip:hover{background:var(--deep)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;max-width:1200px;margin:0 auto;padding:0 5vw 60px}
+.blog-card{background:var(--surface);border:1px solid #cdbb94}
+.blog-card-image img{display:block;width:100%;height:220px;object-fit:cover}
+.blog-card-body{padding:22px}
+.blog-card-meta,.blog-card-footer,.blog-detail-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font:10px 'DM Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.blog-card-body h3{margin:16px 0 10px;font:300 clamp(1.4rem,2vw,1.9rem) Fraunces,serif;line-height:1.2;letter-spacing:-.01em}
+.blog-card-body p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:14px}
+.blog-card-footer a{color:var(--action);font:12px Manrope;text-decoration:underline;text-transform:none;letter-spacing:0}
+.blog-detail{max-width:1000px;margin:0 auto;padding:40px 5vw 80px}
+.blog-detail-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;margin-bottom:40px}
+.blog-detail-hero img{width:100%;height:420px;object-fit:cover;display:block}
+.blog-detail-copy h1{font-size:clamp(2.2rem,5vw,3.5rem);margin:12px 0}
+.blog-body{font-size:15px;line-height:1.9;color:var(--ink);max-width:68ch}
+.blog-body p{margin-bottom:18px}
+
+.blog-body h2{font:300 32px Fraunces,serif;letter-spacing:-.02em;margin:42px 0 14px}
+.blog-body ul{margin:0 0 18px;padding-left:20px}
+.blog-body img{max-width:100%;height:auto;display:block;margin:28px 0}
+.related-package-block{margin-top:56px}
+@media(max-width:800px){.blog-detail-hero{grid-template-columns:1fr}.blog-detail-hero img{height:260px}}
+
+/* ===== Admin blog forms (New and Edit): no page edits needed ===== */
+:is(.blog-form,form:has(textarea[name="content"])){display:flex;flex-direction:column;gap:26px;max-width:760px;margin-top:36px}
+:is(.blog-form,form:has(textarea[name="content"])) label{display:flex;flex-direction:column;gap:8px;font:11px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+:is(.blog-form,form:has(textarea[name="content"])) :is(input:not([type=checkbox]),select,textarea){display:block;width:100%;background:var(--surface);border:1px solid #cdbb94;padding:12px 14px;font:14px Manrope;letter-spacing:0;text-transform:none;color:var(--ink)}
+:is(.blog-form,form:has(textarea[name="content"])) textarea{resize:vertical;line-height:1.7;min-height:110px}
+:is(.blog-form,form:has(textarea[name="content"])) textarea[name="content"]{min-height:340px}
+:is(.blog-form,form:has(textarea[name="content"])) ::placeholder{color:var(--muted)}
+:is(.blog-form,form:has(textarea[name="content"])) .btn{align-self:flex-start}
+:is(.blog-form,form:has(textarea[name="content"])) :is(h2,h3,legend){font:11px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:6px 0 0}
+:is(.blog-form,form:has(textarea[name="content"])) fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+:is(.blog-form,form:has(textarea[name="content"])) label:has(>input[type=checkbox]){flex-direction:row;align-items:center;gap:12px;font:13px Manrope;letter-spacing:0;text-transform:none;color:var(--ink);padding:12px 14px;background:var(--surface);border:1px solid #cdbb94}
+:is(.blog-form,form:has(textarea[name="content"])) input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--action);flex:none}
+.save-notice{margin:24px 0 0;padding:14px 18px;background:var(--surface);border-left:3px solid var(--action);font-size:13px;line-height:1.6;max-width:760px}
+.save-notice a{text-decoration:underline;margin-left:6px;color:var(--action)}
+
+/* ===== Admin blog list ===== */
+.bl-list{list-style:none;margin:32px 0 0;padding:0}
+.bl-row{display:grid;grid-template-columns:1fr 110px auto;gap:20px;align-items:center;padding:20px 4px;border-bottom:1px solid #cdbb94}
+.bl-main strong{display:block;font-weight:600;font-size:15px}
+.bl-main small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+.bl-pill{font:10px 'DM Mono';letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--gold);padding:3px 8px;justify-self:start}
+.bl-pill[data-s=published]{background:var(--action);color:var(--surface);border-color:var(--action)}
+.bl-actions{display:flex;align-items:center;gap:18px}
+.bl-actions .btn{min-height:38px;padding:0 18px}
+.text-link{font-size:12px;text-decoration:underline;color:var(--action)}
+.danger-btn{font:12px Manrope;color:#8a3b2c;background:none;border:0;text-decoration:underline;cursor:pointer;padding:8px 0}
+.danger-btn:disabled{opacity:.5;cursor:wait}
+@media(max-width:700px){.bl-row{grid-template-columns:1fr auto}.bl-actions{grid-column:1/-1;flex-wrap:wrap}}
+
+/* ===== Save confirmation ===== */
+.save-notice{margin:24px 0 0;padding:14px 18px;background:var(--surface);border-left:3px solid var(--action);font-size:13px;line-height:1.6;max-width:760px}
+.save-notice a{text-decoration:underline;margin-left:8px;color:var(--action)}
+
+/* ===== Public blog list: editorial cards ===== */
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:56px 36px}
+.blog-card{display:flex;flex-direction:column;gap:14px;background:none;border:0;border-radius:0;box-shadow:none;padding:0}
+.blog-card > div:not(:has(> img)){display:flex;flex-direction:column;gap:10px;padding:0}
+.blog-card :has(> img){display:block;aspect-ratio:3/2;overflow:hidden;background:var(--deep);margin:0}
+.blog-card img{display:block;width:100%;height:100%;object-fit:cover;color:transparent;transition:transform .6s ease}
+.blog-card:hover img{transform:scale(1.04)}
+.blog-card :is(h2,h3){font:300 28px/1.15 Fraunces,serif;letter-spacing:-.02em;margin:4px 0 0;color:var(--ink)}
+.blog-card p{font-size:14px;line-height:1.7;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.blog-card a{color:inherit}
+.blog-card :is(h2,h3) a:hover{text-decoration:underline;text-underline-offset:4px}
+@media(max-width:800px){.blog-grid{grid-template-columns:1fr;gap:44px}}

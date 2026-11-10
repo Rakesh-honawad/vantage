@@ -7,6 +7,7 @@ export const translations = {
     home: 'Home',
     packages: 'Packages',
     contact: 'Contact',
+    blog: 'Blog',
     findJourney: 'Find a journey',
     anywhereKerala: 'Anywhere in Kerala',
     anyMonth: 'Any month',
@@ -72,6 +73,7 @@ export const translations = {
     anyLength: 'कोई भी लंबाई',
     anyHotel: 'कोई भी होटल',
     clear: 'साफ़ करें',
+    blog: 'ब्लॉग',
     journey: 'यात्रा',
     journeys: 'यात्राएँ',
     destination: 'गंतव्य',
@@ -115,6 +117,7 @@ export const translations = {
   de: {
     home: 'Startseite',
     packages: 'Pakete',
+    blog: 'Blog',
     contact: 'Kontakt',
     findJourney: 'Reise finden',
     anywhereKerala: 'Überall in Kerala',

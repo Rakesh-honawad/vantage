@@ -1,0 +1,40 @@
+/* ---------- Blog forms (new and edit) ---------- */
+.blog-form { display: flex; flex-direction: column; gap: 26px; max-width: 760px; margin-top: 36px; }
+.blog-form label {
+  display: flex; flex-direction: column; gap: 8px;
+  font: 11px 'DM Mono'; letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
+}
+.blog-form input:not([type=checkbox]),
+.blog-form select,
+.blog-form textarea {
+  display: block; width: 100%; background: var(--surface); border: 1px solid #cdbb94;
+  padding: 12px 14px; font: 14px Manrope; letter-spacing: 0; text-transform: none; color: var(--ink);
+}
+.blog-form textarea { resize: vertical; line-height: 1.7; min-height: 110px; }
+.blog-form textarea[name=content] { min-height: 340px; }
+.blog-form ::placeholder { color: var(--muted); }
+.blog-form .btn { align-self: flex-start; }
+
+/* Related packages: one bordered row each */
+.blog-form h2, .blog-form h3, .blog-form legend {
+  font: 11px 'DM Mono'; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin: 6px 0 0;
+}
+.blog-form fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.blog-form label:has(> input[type=checkbox]) {
+  flex-direction: row; align-items: center; gap: 12px;
+  font: 13px Manrope; letter-spacing: 0; text-transform: none; color: var(--ink);
+  padding: 12px 14px; background: var(--surface); border: 1px solid #cdbb94;
+}
+.blog-form input[type=checkbox] { width: 18px; height: 18px; padding: 0; accent-color: var(--action); flex: none; }
+
+/* ---------- Blog list ---------- */
+.bl-list { list-style: none; margin: 32px 0 0; padding: 0; }
+.bl-row { display: grid; grid-template-columns: 1fr 110px auto; gap: 20px; align-items: center; padding: 20px 4px; border-bottom: 1px solid #cdbb94; }
+.bl-main strong { display: block; font-weight: 600; font-size: 15px; }
+.bl-main small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+.bl-pill { font: 10px 'DM Mono'; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--gold); padding: 3px 8px; justify-self: start; }
+.bl-pill[data-s=published] { background: var(--action); color: var(--surface); border-color: var(--action); }
+.bl-actions { display: flex; align-items: center; gap: 18px; }
+.bl-actions .btn { min-height: 38px; padding: 0 18px; }
+.link-btn { font-size: 12px; text-decoration: underline; color: var(--action); }
+@media (max-width: 700px) { .bl-row { grid-template-columns: 1fr auto; } .bl-actions { grid-column: 1 / -1; } }

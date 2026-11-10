@@ -5,6 +5,7 @@ import { getText, type Locale, withLocale } from '@/lib/i18n'
 const links = (locale: Locale) => [
   { label: getText(locale, 'home'), href: withLocale('/', locale) },
   { label: getText(locale, 'packages'), href: withLocale('/packages', locale) },
+  { label: getText(locale, 'blog'), href: withLocale('/blog', locale) },
   { label: getText(locale, 'contact'), href: withLocale('/#contact', locale) },
 ]
 

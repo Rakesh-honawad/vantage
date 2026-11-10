@@ -9,6 +9,7 @@ export const metadata: Metadata = { title: { default: 'Rocky Studio', template: 
 
 const NAV: (NavItem & { roles: Role[] })[] = [
   { href: '/admin/packages', label: 'Packages', roles: ['admin', 'editor'] },
+  { href: '/admin/blog', label: 'Blog', roles: ['admin', 'editor'] },
   { href: '/admin/enquiries', label: 'Enquiries', roles: ['admin', 'consultant'] },
   { href: '/admin/activity', label: 'Activity', roles: ['admin'] },
 ]

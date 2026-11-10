@@ -17,8 +17,13 @@ export const metadata: Metadata = {
 
 export const revalidate = 60
 
-export default async function Home({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
-  const locale = getLocale(searchParams)
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const resolvedSearchParams = await searchParams
+  const locale = getLocale(resolvedSearchParams)
   const [all, destinations] = await Promise.all([getPublishedPackages(), getDestinations()])
   const tile = (name: string, img: string) => {
     const matching = all.filter((p) => p.seasons.some((s) => s.name === name))

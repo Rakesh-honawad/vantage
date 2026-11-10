@@ -3,6 +3,7 @@ import { loadRedirects } from './redirects.mjs'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ['172.25.48.1'],
+  allowedDevOrigins: ['10.169.175.144'],
   images: {
     unoptimized: true,
   },

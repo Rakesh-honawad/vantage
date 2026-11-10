@@ -1,0 +1,18 @@
+/* Blog form */
+.blog-form { display: flex; flex-direction: column; gap: 24px; max-width: 760px; margin-top: 36px; }
+.blog-form .fld {
+  display: flex; flex-direction: column; gap: 8px;
+  font: 11px 'DM Mono'; letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
+}
+.blog-form .fld input,
+.blog-form .fld select,
+.blog-form .fld textarea {
+  width: 100%; background: var(--surface); border: 1px solid #cdbb94; padding: 12px 14px;
+  font: 14px Manrope; letter-spacing: 0; text-transform: none; color: var(--ink);
+}
+.blog-form .fld textarea { resize: vertical; line-height: 1.7; }
+.blog-form .fld input::placeholder, .blog-form .fld textarea::placeholder { color: var(--muted); }
+.blog-form .fld input:focus, .blog-form .fld select:focus, .blog-form .fld textarea:focus {
+  outline: 2px solid var(--action); outline-offset: 1px;
+}
+.blog-form .btn { align-self: flex-start; }
